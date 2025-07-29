@@ -8,7 +8,6 @@ We welcome contributions from:
 - Medical professionals (pediatrics, psychiatry, neurodevelopment)
 - Developers focused on ethical AI
 - Translators for French, Arabic, English, etc.
-- UX and accessibility experts
 
 ## Guidelines
 - Keep all contributions **non-commercial**
