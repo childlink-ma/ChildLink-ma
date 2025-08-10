@@ -1,7 +1,7 @@
 # --- Web ---
 Flask==3.1.1
 flask-cors==6.0.1
-gunicorn==21.2.0
+gunicorn==23.0.0
 
 # --- OpenAI / HTTP ---
 openai>=1.40.0,<2
