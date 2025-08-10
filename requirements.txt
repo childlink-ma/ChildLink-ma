@@ -6,7 +6,7 @@ gunicorn==21.2.0
 # --- OpenAI / HTTP ---
 openai>=1.40.0,<2
 httpx~=0.27.2
-requests==2.31.0
+requests==2.32.4
 
 # --- Vector / Data ---
 faiss-cpu==1.11.0.post1
