@@ -16,3 +16,26 @@ clm_metadata*.json
 .DS_Store
 *.log
 *.swp
+# secrets / env
+.env
+.env.*
+# python cache
+__pycache__/
+*.pyc
+*.log
+.DS_Store
+*.swp
+# data / corpora / indexes (NE JAMAIS COMMIT)
+clm_index*.index
+clm_metadata*.json
+index_info*.json
+chunks_enriched.json
+chunks*.json
+clm_agent/chunks_enriched.json
+clm_agent/clm_index*.index
+clm_agent/clm_metadata*.json
+*.pdf
+# data dir: ignore all but keep readme + .gitkeep
+data/*
+!data/.gitkeep
+!data/README_DATA.md
