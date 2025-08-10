@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ChildLink-AI</title>
+  <!-- Import Roboto from Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#fff5ee; --panel:#f3dfd2; --ink:#1f2328; --muted:#6b6b6b; --accent:#b77f66; --border:#e7d5cc; --bubble:#ffffff;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:var(--bg);
+      font:16px/1.5 'Roboto', system-ui, -apple-system, Segoe UI, Inter, Arial, sans-serif;
+      color:var(--ink);
+    }
+    .app{max-width:980px;margin:0 auto;height:100%;display:flex;flex-direction:column}
+    header{padding:16px 14px 8px}
+    .title{display:flex;align-items:center;gap:10px}
+    .title h1{
+      margin:0;
+      font-size:24px;
+      font-weight:700; /* Bold title */
+      font-family:'Roboto',sans-serif;
+    }
+    .langs{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 0 2px}
+    .badge{font-size:12px;background:#fff;border:1px solid var(--border);padding:4px 10px;border-radius:999px;font-family:'Roboto',sans-serif}
+
+    .chat-wrap{flex:1;display:flex;flex-direction:column;gap:10px;padding:0 10px}
+    .panel{flex:1;display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--border);
+           border-radius:16px;padding:10px 10px 0;min-height:560px;overflow:hidden}
+    .scroll{flex:1;overflow:auto;padding:12px 10px 0 10px}
+    .msg{display:flex;margin:0 0 12px 0;gap:10px}
+    .msg .b{max-width:80%;background:var(--bubble);border:1px solid var(--border);padding:12px;border-radius:14px;font-family:'Roboto',sans-serif}
+    .msg.user{justify-content:flex-end}
+    .msg.user .b{background:#fefefe}
+    .msg.bot .b{background:#fff}
+    .meta{font-size:12px;color:var(--muted);margin-top:8px;font-family:'Roboto',sans-serif}
+    .cite span{display:inline-block;margin-right:10px}
+    .fb{display:flex;gap:8px;align-items:center;margin-top:8px}
+    .fb button{
+      border:1px solid var(--border);
+      background:#fff;
+      border-radius:10px;
+      padding:6px 10px;
+      cursor:pointer;
+      font-family:'Roboto',sans-serif;
+      font-weight:700; /* Bold feedback buttons */
+    }
+    .fb button:disabled{opacity:.6;cursor:not-allowed}
+
+    .inputbar{display:flex;gap:10px;align-items:flex-end;padding:10px;background:var(--panel);border-top:1px solid var(--border)}
+    .inputbar textarea{
+      flex:1;
+      max-height:200px;
+      min-height:56px;
+      resize:vertical;
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:12px;
+      background:#fff;
+      font:inherit;
+    }
+    .controls{display:flex;flex-direction:column;gap:8px;min-width:200px}
+    .controls select{
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:10px;
+      background:#fff;
+      font-family:'Roboto',sans-serif;
+    }
+    .controls button{
+      background:var(--accent);
+      color:#fff;
+      border:0;
+      border-radius:12px;
+      padding:12px 18px;
+      font-weight:700; /* Bold send button */
+      cursor:pointer;
+      font-family:'Roboto',sans-serif;
+    }
+    .controls button:disabled{opacity:.6;cursor:not-allowed}
+    .status{font-size:12px;color:var(--muted);text-align:right;padding:0 2px 8px;font-family:'Roboto',sans-serif}
+    .disclaimer{font-size:12px;color:var(--muted);padding:8px 12px 12px;font-family:'Roboto',sans-serif}
+
+    @media (max-width:760px){
+      .controls{min-width:0}
+      .msg .b{max-width:90%}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="title"><h1>ChildLink-AI</h1></div>
+      <div class="langs" aria-label="Supported languages (auto-detect)">
+        <span class="badge">EN</span>
+        <span class="badge">FR</span>
+        <span class="badge" title="Arabic">العربية</span>
+        <span class="badge">ES</span>
+        <span class="badge" title="Russian">РУ</span>
+        <span class="badge" title="Chinese">中文</span>
+      </div>
+    </header>
+
+    <div class="chat-wrap">
+      <div class="panel">
+        <div class="scroll" id="scroll"><!-- no welcome bubble --></div>
+        <div class="status" id="status"></div>
+
+        <div class="inputbar">
+          <textarea id="q" placeholder="Type your question here…  (Enter to send, Shift+Enter for new line)"></textarea>
+          <div class="controls">
+            <select id="forceLang" title="Answer language (optional)">
+              <option value="">Auto language</option>
+              <option value="English">English</option>
+              <option value="French">Français</option>
+              <option value="Arabic">العربية (Arabic)</option>
+              <option value="Spanish">Español</option>
+              <option value="Russian">Русский</option>
+              <option value="Chinese">中文 (Chinese)</option>
+            </select>
+            <button id="send">Send</button>
+          </div>
+        </div>
+
+        <div class="disclaimer">⚠️ This tool offers general guidance and does not replace consultation with a qualified healthcare professional. This assistant is a support tool and not a medical product.</div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const API = "/ask";
+  const FB  = "/feedback";
+
+  const scrollEl    = document.getElementById("scroll");
+  const qEl         = document.getElementById("q");
+  const sendBtn     = document.getElementById("send");
+  const statusEl    = document.getElementById("status");
+  const forceLangEl = document.getElementById("forceLang");
+
+  const history = [];
+
+  function esc(s){ return s==null ? "" : String(s); }
+  function setStatus(s){ statusEl.textContent = s || ""; }
+  function autoscroll(){ requestAnimationFrame(()=>{ scrollEl.scrollTop = scrollEl.scrollHeight; }); }
+
+  function addMessage(role, text, metaHTML="", withFeedback=false){
+    const wrap = document.createElement("div");
+    wrap.className = "msg " + (role === "user" ? "user" : "bot");
+    const bubble = document.createElement("div");
+    bubble.className = "b";
+    bubble.setAttribute("dir","auto");
+    bubble.innerText = text;
+    wrap.appendChild(bubble);
+
+    if(metaHTML){
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      meta.innerHTML = metaHTML;
+      bubble.appendChild(meta);
+    }
+
+    if(withFeedback){
+      const fb = document.createElement("div");
+      fb.className = "fb";
+      fb.innerHTML = `
+        <button class="fb-btn" data-sig="up"   aria-label="Helpful">👍 Helpful</button>
+        <button class="fb-btn" data-sig="down" aria-label="Not helpful">👎 Not helpful</button>
+        <span class="fb-status" style="font-size:12px;color:#6a6a6a;"></span>
+      `;
+      bubble.appendChild(fb);
+    }
+
+    scrollEl.appendChild(wrap);
+    autoscroll();
+    return wrap;
+  }
+
+  scrollEl.addEventListener("click", async (e)=>{
+    const btn = e.target.closest(".fb-btn");
+    if(!btn) return;
+    const sig = btn.dataset.sig;
+    const fbWrap = btn.parentElement;
+    const status = fbWrap.querySelector(".fb-status");
+    const buttons = fbWrap.querySelectorAll("button");
+
+    try{
+      buttons.forEach(b=>b.disabled = true);
+      status.textContent = "Sending feedback…";
+      await fetch(FB, {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ signal: sig })
+      });
+      status.textContent = "Thanks!";
+    }catch(_){
+      status.textContent = "Error";
+      buttons.forEach(b=>b.disabled = false);
+    }
+  });
+
+  async function send(){
+    const raw = qEl.value.trim();
+    if(!raw) return;
+
+    let prompt = raw;
+    if (forceLangEl.value){
+      prompt = `Please answer in ${forceLangEl.value}. ` + raw;
+    }
+
+    addMessage("user", raw);
+    qEl.value = ""; qEl.focus();
+    sendBtn.disabled = true;
+    setStatus("Thinking…");
+
+    const payloadHistory = history.slice(-10);
+
+    try{
+      const t0 = performance.now();
+      const r = await fetch(API, {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ question: prompt, history: payloadHistory })
+      });
+      const j = await r.json();
+
+      if(!r.ok){
+        throw new Error((j && j.error) ? j.error : ("HTTP "+r.status));
+      }
+
+      const cites = (j.citations||[])
+        .map(c => `<span>[${esc(c.source)||"NC"}, ${esc(c.year)||"NC"}]</span>`)
+        .join(" ");
+      const extra = cites ? `<div class="cite">${cites}</div>` : "";
+      addMessage("assistant", j.answer || "(no answer)", extra, true);
+
+      history.push({role:"user", content: raw});
+      history.push({role:"assistant", content: j.answer || ""});
+
+      const t1 = performance.now();
+      setStatus(`Done in ${Math.max(1, Math.round(t1 - t0))} ms`);
+    }catch(e){
+      addMessage("assistant", "Error: " + (e.message || "Unexpected error"));
+      setStatus("");
+    }finally{
+      sendBtn.disabled = false;
+    }
+  }
+
+  sendBtn.addEventListener("click", send);
+  qEl.addEventListener("keydown", (e)=>{
+    if(e.key === "Enter" && !e.shiftKey){
+      e.preventDefault();
+      send();
+    }
+  });
+</script>
+</body>
+</html>
