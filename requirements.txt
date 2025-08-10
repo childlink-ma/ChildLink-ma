@@ -10,7 +10,7 @@ requests==2.31.0
 
 # --- Vector / Data ---
 faiss-cpu==1.11.0.post1
-numpy==1.26.4
+numpy==2.0.2
 tqdm==4.67.1
 langdetect==1.0.9
 
