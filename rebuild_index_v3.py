@@ -17,14 +17,7 @@ client = AzureOpenAI(
     api_version=APIVER,
 )
 
-def load_chunks():
-    candidates = [
-        os.getenv("CHUNKS_PATH", "data/chunks_enriched.json"),
-        "data/chunks_enriched.json",
-        os.getenv("FAISS_METADATA_PATH", "chunks_enriched.json"),
-        "chunks_enriched.json",
-    ]
-    # on utilise le fichier enrichi
+def load_chunks():    # on utilise le fichier enrichi
     path = os.getenv("FAISS_METADATA_PATH", "chunks_enriched.json")
     if not os.path.exists(path):
         path = "chunks_enriched.json"
@@ -36,7 +29,8 @@ def load_chunks():
         # si jamais c'était encapsulé dans une clé
         for k,v in data.items():
             if isinstance(v, list):
-                data = v; break
+                data = v
+                break
 
     rows = []
     for r in data:
@@ -73,11 +67,13 @@ def main():
     BATCH = 96
     vecs = np.zeros((n, DIMS), dtype="float32")
 
-    t0 = time.time(); calls = 0
+    t0 = time.time()
+    calls = 0
     for i in tqdm(range(0, n, BATCH)):
         if calls and calls % 30 == 0:
             dt = time.time() - t0
-            if dt < 60: time.sleep(60 - dt)
+            if dt < 60:
+                time.sleep(60 - dt)
             t0 = time.time()
         chunk = [r["text"] for r in rows[i:i+BATCH]]
         V = embed_batch(chunk)
