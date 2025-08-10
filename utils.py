@@ -1,4 +1,7 @@
-import faiss, json, os, numpy as np
+import faiss
+import json
+import os
+import numpy as np
 
 def load_faiss(index_path: str, metadata_path: str):
     if not os.path.exists(index_path):

@@ -10,7 +10,6 @@ from flask import Flask, request, jsonify, send_file, make_response, redirect
 from flask_cors import CORS
 from openai import AzureOpenAI
 import httpx
-from langdetect import detect  # facultatif
 from utils import load_faiss, semantic_search
 
 # ========= Configuration =========

@@ -1,5 +1,9 @@
-import os, json, time, re
-import numpy as np, faiss
+import os
+import json
+import time
+import re
+import numpy as np
+import faiss
 from tqdm import tqdm
 from openai import AzureOpenAI
 
