@@ -42,7 +42,7 @@ SYSTEM_PROMPT = (
     "When you use the fallback, prefix the answer with [FALLBACK].\n"
     "- Never diagnose. Encourage consulting qualified professionals. Provide red flags and orientation steps when appropriate.\n"
     "- Max 150 words for the main answer.\n"
-    "- Cite sources inline at the end as: Références: [Org, Année]; [Org2, Année2]. Do NOT use numeric citations like [1], [2].\n"
+    "- Cite sources inline at the end as: References: [Org, Year]; [Org2, Year2]. Do NOT use numeric citations like [1], [2].\n"
     "- Respond in the user's language.\n"
     "- Do NOT include any disclaimer text in your answer; the UI displays it separately.\n"
 )
@@ -100,7 +100,7 @@ def require_api_key():
     if (not origin) or origin.startswith(base) or (referer and referer.startswith(base)):
         return
     if PUBLIC_API_KEY and request.headers.get("X-API-Key") != PUBLIC_API_KEY:
-        return jsonify({"error": "Non autorisé. Clé API invalide ou absente."}), 401
+        return jsonify({"error": "Unauthorized. Missing or invalid API key."}), 401
 
 # ========= Azure OpenAI Client =========
 def make_client():
@@ -239,7 +239,7 @@ def ask():
             "country": get_country(),
             "rate_limited": True
         })
-        return jsonify({"error": "Limite atteinte : 3 questions par jour", "remaining": 0}), 429
+        return jsonify({"error": "Limit reached: 3 questions per day", "remaining": 0}), 429
 
     try:
         data = request.get_json(force=True)
@@ -276,7 +276,7 @@ def ask():
             "en croisant les extraits pertinents ci-dessous. "
             "Ne liste pas les sources au fil du texte; synthétise d’abord, "
             "puis termine par une ligne de références au format: "
-            "Références: [Org, Année]; [Org2, Année2].\n\n"
+            "References: [Org, Year]; [Org2, Year2].\n\n"
             f"Context:\n{context_block}\n\nQuestion: {question}"
         )
         messages.append({"role": "user", "content": user_msg})
@@ -295,13 +295,13 @@ def ask():
         answer = re.sub(r'(Ce contenu est fourni.*?dispositif médical\.)', '', answer, flags=re.I|re.S)
         answer = re.sub(r'\n{3,}', '\n\n', answer).strip()
 
-        # Si pas de ligne "Références:" en fin de texte, on l'ajoute
-        if "Références:" not in answer:
+        # Si pas de ligne "References:" en fin de texte, on l'ajoute
+        if "References:" not in answer:
             refs_txt = "; ".join(
                 [f"[{c['source']}" + (f", {c['year']}]" if 'year' in c else "]") for c in citations]
             )
             if refs_txt:
-                answer = f"{answer}\n\nRéférences: {refs_txt}"
+                answer = f"{answer}\n\nReferences: {refs_txt}"
 
         # Metrics & webhook
         latency_ms = int((time.time() - t0) * 1000)
