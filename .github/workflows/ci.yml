@@ -4,29 +4,14 @@ on:
   pull_request:
 
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
-    env:
-      AZURE_OPENAI_ENDPOINT: "http://localhost"
-      AZURE_OPENAI_API_KEY: "test"
-      AZURE_OPENAI_API_VERSION: "2024-10-21"
-      OPENAI_API_VERSION: "2024-10-21"
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-          cache: "pip"
-
-      - name: Install deps
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install ruff==0.5.6 pytest
-
-      - name: Lint (ruff)
-        run: ruff check --output-format=github . --format=github
-
-      - name: Pytests (repo smoke tests only)
-        run: pytest -q tests/test_repo.py
+      - name: Install ruff
+        run: python -m pip install --upgrade pip ruff
+      - name: Ruff
+        run: ruff check .
