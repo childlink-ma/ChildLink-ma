@@ -14,6 +14,12 @@ client = AzureOpenAI(
 )
 
 def load_chunks():
+    candidates = [
+        os.getenv("CHUNKS_PATH", "data/chunks_enriched.json"),
+        "data/chunks_enriched.json",
+        os.getenv("FAISS_METADATA_PATH", "chunks_enriched.json"),
+        "chunks_enriched.json",
+    ]
     # on utilise le fichier enrichi
     path = os.getenv("FAISS_METADATA_PATH", "chunks_enriched.json")
     if not os.path.exists(path):
