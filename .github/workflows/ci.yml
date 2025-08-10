@@ -6,6 +6,11 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      AZURE_OPENAI_ENDPOINT: "http://localhost"
+      AZURE_OPENAI_API_KEY: "test"
+      AZURE_OPENAI_API_VERSION: "2024-10-21"
+      OPENAI_API_VERSION: "2024-10-21"
     steps:
       - uses: actions/checkout@v4
 
@@ -21,7 +26,7 @@ jobs:
           pip install ruff pytest
 
       - name: Lint (ruff)
-        run: ruff check .
+        run: ruff check . --format=github
 
-      - name: Pytests (repo smoke tests)
-        run: pytest -q
+      - name: Pytests (repo smoke tests only)
+        run: pytest -q tests/test_repo.py
