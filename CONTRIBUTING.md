@@ -1,26 +1,63 @@
-# Contributing to ChildLink-MA
+# Contributing to ChildLink-MA Assistant
 
-Thank you for your interest in contributing to ChildLink-MA!  
-This is an open, non-commercial project focused on ethical, medically grounded AI for neurodiverse support.
+Thank you for your interest. ChildLink-MA is a nonprofit, open-source initiative.
+All contributions must align with our ethical and clinical quality standards.
 
-## Who Can Contribute
-We welcome contributions from:
-- Medical professionals (pediatrics, psychiatry, neurodevelopment)
-- Developers focused on ethical AI
-- Translators for French, Arabic, English, etc.
+---
 
-## Guidelines
-- Keep all contributions **non-commercial**
-- Cite your sources clearly when adding medical content
-- Do not push any personal data or real medical records
-- Use the `dev` branch for pull requests
+## Who We Welcome
+
+- Pediatricians, neurologists, psychologists, and neurodevelopment specialists
+- AI/ML engineers focused on responsible, ethical AI
+- Translators (our 6 target languages: EN · FR · AR · ES · PT · SW)
+- Accessibility and UX experts
+- Parents and educators with lived experience
+
+---
 
 ## How to Contribute
-1. Fork the repository
-2. Create a branch (`feature/my-new-feature`)
-3. Commit your changes with clear messages
-4. Open a pull request to `dev`
 
-For any questions, contact: [admin@childlink-ma.org](mailto:admin@childlink-ma.org)
+### 1. Clinical guidelines (data/)
 
-Let’s build ethical, inclusive AI together 🤝
+Only peer-reviewed or nationally recognized guidelines are accepted (NICE, HAS, CDC, AAP, WHO, DSM-5).
+Open an Issue with the source reference before submitting.
+
+### 2. Code contributions
+
+```bash
+# Fork the repo, then:
+git checkout -b feature/your-feature-name
+# Make your changes
+git commit -m "feat: short description"
+git push origin feature/your-feature-name
+# Open a Pull Request against main
+```
+
+### 3. Bug reports
+
+Use GitHub Issues. Include: steps to reproduce, expected behavior, actual behavior, environment.
+
+---
+
+## Code Standards
+
+- Python: PEP 8, type hints encouraged
+- No secrets or API keys in code or commits
+- All new endpoints must have a test in `tests/`
+- GDPR: no logging of raw questions or IP addresses (hashed IPs only)
+
+---
+
+## Clinical Content Standards
+
+- Every claim must be traceable to a source in `data/`
+- No diagnostic statements
+- No content that could replace professional consultation
+- Sources cited as `[Org, Year]` format only
+
+---
+
+## Contact
+
+📩 admin@childlink-ma.org
+🌐 childlink-ma.org
