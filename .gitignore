@@ -1,41 +1,38 @@
+# Secrets
 .env
-venv/
-__pycache__/
-*.pyc
-.DS_Store
-*.index
-*.json
+*.env
 
-.env
-.env.*
+# FAISS index files (large binaries — deploy separately or via CI)
+*.index
+*.faiss
+clm_metadata_v3.json
+clm_index_v3.index
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
 venv/
-__pycache__/
-*.pyc
-clm_index*.index
-clm_metadata*.json
+env/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# Data (PDFs — large, managed separately)
+data/*.pdf
+data/*.txt
+
+# OS
 .DS_Store
-*.log
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
 *.swp
-# secrets / env
-.env
-.env.*
-# python cache
-__pycache__/
-*.pyc
+
+# Logs
 *.log
-.DS_Store
-*.swp
-# data / corpora / indexes (NE JAMAIS COMMIT)
-clm_index*.index
-clm_metadata*.json
-index_info*.json
-chunks_enriched.json
-chunks*.json
-clm_agent/chunks_enriched.json
-clm_agent/clm_index*.index
-clm_agent/clm_metadata*.json
-*.pdf
-# data dir: ignore all but keep readme + .gitkeep
-data/*
-!data/.gitkeep
-!data/README_DATA.md
+logs/
